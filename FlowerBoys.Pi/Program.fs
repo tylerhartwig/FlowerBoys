@@ -44,6 +44,7 @@ let main argv =
                 async {
                     match! inbox.Receive() with
                     | DeviceAdded device ->
+                        printfn "Bluetooth Actor processing device"
                         try
                             printfn "Device Added with name: %s" device.Name
                         with _ ->
@@ -55,7 +56,9 @@ let main argv =
         MailboxProcessor.Start (mainLoop)
     
     let bluetoothActor = startBluetoothActor()
-    Bluetooth.bluetoothManager (fun d -> bluetoothActor.Post (DeviceAdded d)) (fun _ -> ())
+    Bluetooth.bluetoothManager (fun d ->
+        printfn "Bluetooth manager found device"
+        bluetoothActor.Post (DeviceAdded d)) (fun _ -> ())
 
     Thread.Sleep(Timeout.Infinite)
     0 // return an integer exit code
