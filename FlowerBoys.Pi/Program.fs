@@ -38,6 +38,7 @@ let main argv =
 
         
     let startBluetoothActor () =
+        printfn "Starting bluetooth actor"
         let mainLoop (inbox: MailboxProcessor<BluetoothMsg>) =
             let rec loop () =
                 async {

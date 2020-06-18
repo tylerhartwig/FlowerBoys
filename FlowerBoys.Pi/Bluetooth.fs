@@ -9,7 +9,9 @@ open System.Text
 
 let bus = Bus.System
 let startBusMain () =
-    let thread = Thread(fun () -> bus.Iterate())
+    printfn "Starting bus main"
+    let thread = Thread(fun () ->
+        while true do bus.Iterate())
     thread.Start()
     thread
 
