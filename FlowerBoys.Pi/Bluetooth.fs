@@ -67,21 +67,21 @@ let bluetoothManager onDeviceAdded onDeviceRemoved =
             onDeviceRemoved path
         )
     
-
-let serialPort =
-    let port = new SerialPort(
-                                 portName = "FlowerPort",
-                                 ReadBufferSize = 10,
-                                 dataBits = 8,
-                                 baudRate = 115200,
-                                 Encoding = Encoding.UTF8,
-                                 parity = Parity.Space,
-                                 stopBits = StopBits.One,
-                                 Handshake = Handshake.None
-                             )
-    
-    port.Open()
-    
-    
-    port
+//
+//let serialPort =
+//    let port = new SerialPort(
+//                                 portName = "FlowerPort",
+//                                 ReadBufferSize = 10,
+//                                 dataBits = 8,
+//                                 baudRate = 115200,
+//                                 Encoding = Encoding.UTF8,
+//                                 parity = Parity.Space,
+//                                 stopBits = StopBits.One,
+//                                 Handshake = Handshake.None
+//                             )
+//    
+//    port.Open()
+//    
+//    
+//    port
 
