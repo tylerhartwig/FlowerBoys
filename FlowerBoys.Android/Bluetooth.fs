@@ -41,8 +41,9 @@ type Listener() =
                     Debug.WriteLine <| sprintf "Adapter is enabled"
                 else
                     Debug.WriteLine <| sprintf "Adapter is not enabled"
-                
+
                 Debug.WriteLine <| sprintf "Discovering Devices"
+                
                 adapter.BondedDevices |> Seq.iter (fun d ->
                     Debug.WriteLine <| sprintf "Paired Device: %s" d.Name
                     if d.Name = "raspberrypi" then

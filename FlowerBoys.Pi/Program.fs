@@ -1,33 +1,60 @@
 ﻿// Learn more about F# at http://fsharp.org
 
-open System
+open System.IO.Ports
+open FlowerBoys.Pi.Bluetooth
+open NDesk.DBus
 open System.Threading
 open FlowerBoys.Pi
 
-type Msg = | DataReceived of string
+
+
+type SerialMsg = | SerialMsg of string
+type BluetoothMsg =
+    | DeviceAdded of Device
 
 [<EntryPoint>]
 let main argv =
-    let mainLoop (inbox: MailboxProcessor<Msg>) =
-        let rec loop () =
-            async {
-                match! inbox.Receive() with
-                | DataReceived msg ->
-                    printfn "Message Received: %s" msg
-                    return! loop()
-            }
+    let busThread = Bluetooth.startBusMain()
+    
+    let startSerialActor (serialPort: SerialPort) =
+        let mainLoop (inbox: MailboxProcessor<SerialMsg>) =
+            let rec loop () =
+                async {
+                    match! inbox.Receive() with
+                    | SerialMsg msg ->
+                        printfn "Message Received: %s" msg
+                        return! loop()
+                }
             
-        loop ()
+            loop ()
         
+        let mainActor = MailboxProcessor.Start(mainLoop)
+        
+        serialPort.DataReceived.Add(fun _ ->
+            let next = serialPort.ReadExisting()
+            mainActor.Post (SerialMsg next))
     
-    let mainActor = MailboxProcessor.Start(mainLoop)
-    
-    let serialPort = Bluetooth.serialPort
+        mainActor
 
-    serialPort.DataReceived.Add(fun _ ->
-        let next = serialPort.ReadExisting()
-        mainActor.Post (DataReceived next))
+        
+    let startBluetoothActor () =
+        let mainLoop (inbox: MailboxProcessor<BluetoothMsg>) =
+            let rec loop () =
+                async {
+                    match! inbox.Receive() with
+                    | DeviceAdded device ->
+                        try
+                            printfn "Device Added with name: %s" device.Name
+                        with _ ->
+                            printfn "Device added, could not get name"
+                            
+                        return! loop()
+                }
+            loop ()
+        MailboxProcessor.Start (mainLoop)
     
-    
+    let bluetoothActor = startBluetoothActor()
+    Bluetooth.bluetoothManager (fun d -> bluetoothActor.Post (DeviceAdded d)) (fun _ -> ())
+
     Thread.Sleep(Timeout.Infinite)
     0 // return an integer exit code
