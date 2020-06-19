@@ -57,21 +57,24 @@ let getConnectedDevices () =
     
 let bluetoothManager onDeviceAdded onDeviceRemoved =
     printfn "Setting up bluetooth manager"
-    let o = bus.GetObject<ObjectManager>(BluezServiceName, ObjectPath("/"))
-    
-    o.add_InterfacesAdded(fun path interfaces ->
-        printfn "Interface added at path: %A" path
-        if interfaces.ContainsKey DeviceInterfaceName then
-            let device = getDevice path
-            onDeviceAdded device
-        )
-    
-    o.add_IntefacesRemoved(fun path interfaces ->
-        if interfaces |> Array.contains DeviceInterfaceName then
-            onDeviceRemoved path
-        )
-    
-    printfn "Finished setting up bluetooth manager"
+    try
+        let o = bus.GetObject<ObjectManager>(BluezServiceName, ObjectPath("/"))
+        
+        o.add_InterfacesAdded(fun path interfaces ->
+            printfn "Interface added at path: %A" path
+            if interfaces.ContainsKey DeviceInterfaceName then
+                let device = getDevice path
+                onDeviceAdded device
+            )
+        
+        o.add_IntefacesRemoved(fun path interfaces ->
+            if interfaces |> Array.contains DeviceInterfaceName then
+                onDeviceRemoved path
+            )
+        
+        printfn "Finished setting up bluetooth manager"
+    with ex ->
+        printfn "Failed to setup bluetooth manager with exception: %A" ex
     
 //
 //let serialPort =
