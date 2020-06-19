@@ -10,9 +10,14 @@ open System.Text
 let bus = Bus.System
 let startBusMain () =
     printfn "Starting bus main"
-    let thread = Thread(fun () -> while true do
-                                      printfn "Iterating"
-                                      bus.Iterate())
+    let thread = Thread(fun () ->
+          while true do
+              try
+                  printfn "Iterating"
+                  bus.Iterate()
+              with ex ->
+                  printfn "Iteration failed! %A" ex
+              )
     thread.IsBackground <- true
     thread.Start()
     thread
