@@ -56,6 +56,7 @@ let getConnectedDevices () =
     getNamedDevices () |> Seq.filter (fun d -> d.Connected)
     
 let bluetoothManager onDeviceAdded onDeviceRemoved =
+    printfn "Setting up bluetooth manager"
     let o = bus.GetObject<ObjectManager>(BluezServiceName, ObjectPath("/"))
     
     o.add_InterfacesAdded(fun path interfaces ->
@@ -69,6 +70,8 @@ let bluetoothManager onDeviceAdded onDeviceRemoved =
         if interfaces |> Array.contains DeviceInterfaceName then
             onDeviceRemoved path
         )
+    
+    printfn "Finished setting up bluetooth manager"
     
 //
 //let serialPort =
