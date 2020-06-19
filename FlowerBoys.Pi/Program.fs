@@ -59,6 +59,10 @@ let main argv =
     Bluetooth.bluetoothManager (fun d ->
         printfn "Bluetooth manager found device"
         bluetoothActor.Post (DeviceAdded d)) (fun _ -> ())
+    
+    printfn "Existing named devices: "
+    getNamedDevices() |> Seq.iter (fun d -> printfn "Device: %s" d.Name)
+    
 
     Thread.Sleep(Timeout.Infinite)
     0 // return an integer exit code
