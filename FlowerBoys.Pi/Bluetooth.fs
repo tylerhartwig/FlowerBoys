@@ -7,7 +7,7 @@ open System.IO.Ports
 open System.Text
 
 
-let bus = Bus.Starter
+let bus = Bus.System
 
 printfn "Bus is: %s" bus.UniqueName
 
