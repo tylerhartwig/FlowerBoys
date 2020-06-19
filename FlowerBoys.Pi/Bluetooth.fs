@@ -60,6 +60,7 @@ let bluetoothManager onDeviceAdded onDeviceRemoved =
     try
         let o = bus.GetObject<ObjectManager>(BluezServiceName, ObjectPath("/"))
         
+        let objects = o.GetManagedObjects()
         printfn "Listening for interfaces added"
         o.add_InterfacesAdded(fun path interfaces ->
             printfn "Interface added at path: %A" path
