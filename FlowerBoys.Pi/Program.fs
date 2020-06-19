@@ -56,6 +56,7 @@ let main argv =
         MailboxProcessor.Start (mainLoop)
     
     let bluetoothActor = startBluetoothActor()
+    printfn "Finished setting up bluetooth actor"
     Bluetooth.bluetoothManager (fun d ->
         printfn "Bluetooth manager found device"
         bluetoothActor.Post (DeviceAdded d)) (fun _ -> ())
