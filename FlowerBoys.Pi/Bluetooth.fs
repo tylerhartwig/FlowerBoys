@@ -8,6 +8,9 @@ open System.Text
 
 
 let bus = Bus.System
+
+printfn "Bus is: %s" bus.UniqueName
+
 let startBusMain () =
     printfn "Starting bus main"
     let thread = Thread(fun () ->
@@ -65,7 +68,7 @@ let getConnectedDevices () =
 let bluetoothManager onDeviceAdded onDeviceRemoved =
     printfn "Setting up bluetooth manager"
     try
-        let o = bus.GetObject<ObjectManager>(BluezServiceName, ObjectPath("/"))
+        let o = bus.GetObject<ObjectManager>(BluezServiceName, ObjectPath.Root)
         
         let objects = o.GetManagedObjects()
         printfn "Listening for interfaces added"
