@@ -10,8 +10,8 @@ open System.Text
 let bus = Bus.System
 let startBusMain () =
     printfn "Starting bus main"
-    let thread = Thread(fun () ->
-        while true do bus.Iterate())
+    let thread = Thread(fun () -> while true do bus.Iterate())
+    thread.IsBackground <- true
     thread.Start()
     thread
 
@@ -28,7 +28,7 @@ type Device =
 
 
 let getManagedObjects () =
-    let o = bus.GetObject<ObjectManager>(BluezServiceName, ObjectPath("/"))
+    let o = bus.GetObject<ObjectManager>(BluezServiceName, ObjectPath.Root)
     o.GetManagedObjects()
     
 let (|KeyValue|) (kvp: KeyValuePair<'a, 'b>) = kvp.Key, kvp.Value
