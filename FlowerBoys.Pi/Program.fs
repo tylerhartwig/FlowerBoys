@@ -1,12 +1,9 @@
 ﻿// Learn more about F# at http://fsharp.org
 
-open System.IO.Ports
-open FlowerBoys.Pi.Bluetooth
-open NDesk.DBus
-open System.Threading
 open FlowerBoys.Pi
-
-
+open FlowerBoys.Pi.Bluetooth
+open System.IO.Ports
+open System.Threading
 
 type SerialMsg = | SerialMsg of string
 type BluetoothMsg =

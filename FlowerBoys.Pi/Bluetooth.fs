@@ -1,11 +1,9 @@
 module FlowerBoys.Pi.Bluetooth
 
+open DBus
 open System.Collections.Generic
 open System.Threading
-open NDesk.DBus
-open System.IO.Ports
-open System.Text
-
+open org.freedesktop.DBus
 
 let bus = Bus.System
 
@@ -39,6 +37,7 @@ type Device =
 
 let getManagedObjects () =
     let o = bus.GetObject<ObjectManager>(BluezServiceName, ObjectPath.Root)
+    
     o.GetManagedObjects()
     
 let (|KeyValue|) (kvp: KeyValuePair<'a, 'b>) = kvp.Key, kvp.Value
@@ -70,8 +69,6 @@ let bluetoothManager onDeviceAdded onDeviceRemoved =
     try
         let o = bus.GetObject<ObjectManager>(BluezServiceName, ObjectPath.Root)
         
-        let objects = o.GetManagedObjects()
-        printfn "Listening for interfaces added"
         o.add_InterfacesAdded(fun path interfaces ->
             printfn "Interface added at path: %A" path
             if interfaces.ContainsKey DeviceInterfaceName then
@@ -80,7 +77,7 @@ let bluetoothManager onDeviceAdded onDeviceRemoved =
             )
         
         printfn "Listening for interfaces removed"
-        o.add_IntefacesRemoved(fun path interfaces ->
+        o.add_InterfacesRemoved(fun path interfaces ->
             if interfaces |> Array.contains DeviceInterfaceName then
                 onDeviceRemoved path
             )
